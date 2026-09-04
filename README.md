@@ -13,8 +13,8 @@ Supported formats are HEIC, HEIF, JPG, JPEG, and PNG.
 
 The processor groups photos using each source file's macOS creation date. All photos created on the same day appear on one dated page for that person.
 
-- HEIC/HEIF originals are converted to JPG at quality 85.
-- JPG, JPEG, and PNG originals are copied byte-for-byte without resizing.
+- Every photo, whatever its format, gets a levels and contrast pass so paper reaches white, pencil reaches black, and faint handwriting stays legible.
+- HEIC/HEIF originals are converted to JPG at quality 88. JPG, JPEG, and PNG keep their format and full resolution.
 - A separate thumbnail, at most 360 pixels on its longest side, is generated for gallery pages.
 - Everything in `photo-src/` is ignored by Git and is never published.
 - Web-ready images are written to `public/photos/` and committed.
@@ -24,6 +24,16 @@ Process the inboxes once:
 ```sh
 npm run photos:process
 ```
+
+Re-render everything, including photos already in `public/photos/`, after changing the enhancement settings:
+
+```sh
+npm run photos:reprocess
+```
+
+Output names come from a hash of the source file, so re-rendering overwrites images in place and existing gallery links keep working.
+
+The pass needs ImageMagick (`brew install imagemagick`). Without it the processor falls back to `sips` and skips the enhancement. Set `PHOTO_ENHANCE=0` to turn the pass off; the settings themselves live in `enhanceArguments` in `scripts/process-photos.mjs`.
 
 Watch continuously, then automatically commit and push new web-ready images after a five-second quiet period:
 

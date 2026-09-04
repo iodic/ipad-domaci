@@ -11,6 +11,28 @@ const outputRoot = path.join(projectRoot, "public", "photos");
 export const categories = ["luka", "vanja"];
 const supportedExtensions = new Set([".heic", ".heif", ".jpg", ".jpeg", ".png"]);
 const heicExtensions = new Set([".heic", ".heif"]);
+const jpegExtensions = new Set([".jpg", ".jpeg"]);
+
+const thumbnailSize = 360;
+const jpegQuality = 88;
+const thumbnailQuality = 82;
+const enhanceEnabled = process.env.PHOTO_ENHANCE !== "0";
+const forceReprocess = process.env.PHOTO_FORCE === "1" || process.argv.includes("--force");
+
+// Levels/contrast pass tuned for phone photos of homework on paper: stretch the
+// histogram so paper reaches white and pencil reaches black, add an S-curve for
+// local contrast, then sharpen so faint pencil strokes stay legible. The stretch
+// runs across the channels together, not per channel, because per-channel levels
+// swing the paper towards whatever cast the room lighting had. Saturation is left
+// alone for the same reason.
+const enhanceArguments = [
+  "-contrast-stretch", "0.5%x0.5%",
+  "-sigmoidal-contrast", "3x50%",
+  "-unsharp", "0x1.5+1.0+0.02",
+];
+
+const magickCandidates = ["/opt/homebrew/bin/magick", "/usr/local/bin/magick", "/opt/homebrew/bin/convert", "/usr/local/bin/convert"];
+let magickPathPromise;
 
 export async function processPhoto(inputPath, category) {
   const extension = path.extname(inputPath).toLowerCase();
@@ -35,16 +57,19 @@ export async function processPhoto(inputPath, category) {
 
   await fs.mkdir(outputDirectory, { recursive: true });
 
-  if (!(await exists(outputPath))) {
-    if (heicExtensions.has(extension)) {
-      await convertHeic(inputPath, outputPath);
-    } else {
-      await copyAtomically(inputPath, outputPath);
-    }
+  if (forceReprocess || !(await exists(outputPath))) {
+    await render(inputPath, outputPath, outputExtension, {
+      quality: jpegQuality,
+      isHeic: heicExtensions.has(extension),
+    });
   }
 
-  if (!(await exists(thumbnailPath))) {
-    await makeThumbnail(outputPath, thumbnailPath, outputExtension);
+  if (forceReprocess || !(await exists(thumbnailPath))) {
+    await render(inputPath, thumbnailPath, outputExtension, {
+      quality: thumbnailQuality,
+      isHeic: heicExtensions.has(extension),
+      maxSize: thumbnailSize,
+    });
   }
 
   return {
@@ -79,44 +104,69 @@ export async function processAllPhotos() {
   return processed;
 }
 
-async function convertHeic(inputPath, outputPath) {
-  const temporaryPath = `${outputPath}.tmp.jpg`;
+// Always renders from the original so the enhancement runs once per output and
+// the thumbnail is sharpened at its own scale instead of inheriting full-size
+// sharpening. Falls back to sips when ImageMagick is not installed, which keeps
+// the old behaviour minus the levels pass.
+async function render(inputPath, outputPath, extension, { quality, isHeic, maxSize } = {}) {
+  const temporaryPath = `${outputPath}.tmp${extension}`;
+  const magick = await resolveMagick();
+
   try {
-    await run("/usr/bin/sips", [
-      "-s",
-      "format",
-      "jpeg",
-      "-s",
-      "formatOptions",
-      "85",
-      inputPath,
-      "--out",
-      temporaryPath,
-    ]);
+    if (magick) {
+      const args = [inputPath, "-auto-orient"];
+
+      if (maxSize) {
+        args.push("-resize", `${maxSize}x${maxSize}>`);
+      }
+      if (enhanceEnabled) {
+        args.push(...enhanceArguments);
+      }
+      if (jpegExtensions.has(extension)) {
+        args.push("-quality", String(quality), "-interlace", "Plane");
+      }
+
+      await run(magick, [...args, temporaryPath]);
+    } else {
+      await renderWithSips(inputPath, temporaryPath, { isHeic, maxSize });
+    }
+
     await replaceFile(temporaryPath, outputPath);
   } finally {
     await fs.rm(temporaryPath, { force: true });
   }
 }
 
-async function makeThumbnail(inputPath, thumbnailPath, extension) {
-  const temporaryPath = `${thumbnailPath}.tmp${extension}`;
-  try {
-    await run("/usr/bin/sips", ["-Z", "360", inputPath, "--out", temporaryPath]);
-    await replaceFile(temporaryPath, thumbnailPath);
-  } finally {
-    await fs.rm(temporaryPath, { force: true });
+async function renderWithSips(inputPath, outputPath, { isHeic, maxSize }) {
+  const args = [];
+
+  if (isHeic) {
+    args.push("-s", "format", "jpeg", "-s", "formatOptions", "85");
   }
+  if (maxSize) {
+    args.push("-Z", String(maxSize));
+  }
+  if (args.length === 0) {
+    await fs.copyFile(inputPath, outputPath);
+    return;
+  }
+
+  await run("/usr/bin/sips", [...args, inputPath, "--out", outputPath]);
 }
 
-async function copyAtomically(inputPath, outputPath) {
-  const temporaryPath = `${outputPath}.tmp`;
-  try {
-    await fs.copyFile(inputPath, temporaryPath);
-    await replaceFile(temporaryPath, outputPath);
-  } finally {
-    await fs.rm(temporaryPath, { force: true });
-  }
+async function resolveMagick() {
+  magickPathPromise ??= (async () => {
+    for (const candidate of magickCandidates) {
+      if (await exists(candidate)) {
+        return candidate;
+      }
+    }
+
+    console.warn("ImageMagick not found; skipping the levels/contrast pass.");
+    return null;
+  })();
+
+  return magickPathPromise;
 }
 
 async function replaceFile(source, destination) {

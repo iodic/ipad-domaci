@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "photos:process": "node scripts/process-photos.mjs",
+    "photos:reprocess": "node scripts/process-photos.mjs --force",
     "photos:watch": "node scripts/watch-photos.mjs",
     "photos:watch:local": "PHOTO_AUTO_PUBLISH=0 node scripts/watch-photos.mjs",
     "watcher:install": "node scripts/install-watcher.mjs",
