@@ -76,13 +76,13 @@ Every page includes a `noindex, nofollow, noarchive` robots directive. `robots.t
 The public `iodic/ipad-domaci` repository is built and hosted using GitHub Pages. HTTPS enforcement must remain disabled so the iPad 1 can use:
 
 ```text
-http://domaci.iodicdesign.com
+http://dom.iodicdesign.com
 ```
 
 The Cloudflare DNS record should be a DNS-only CNAME:
 
 ```text
-domaci -> iodic.github.io
+dom -> iodic.github.io
 ```
 
 The deployed gallery is intentionally public.
