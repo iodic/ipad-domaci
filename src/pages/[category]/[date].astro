@@ -1,0 +1,39 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import {
+  categories,
+  getPosts,
+  type PhotoPost,
+} from "../../lib/photos";
+
+export function getStaticPaths() {
+  return categories.flatMap((category) =>
+    getPosts(category.slug).map((post) => ({
+      params: { category: category.slug, date: post.date },
+      props: { category, post },
+    })),
+  );
+}
+
+interface Props {
+  category: (typeof categories)[number];
+  post: PhotoPost;
+}
+
+const { category, post } = Astro.props;
+---
+
+<Layout title={`${post.title} — ${category.name}`}>
+  <a class="back-link" href={`/${category.slug}/`}>&larr; {category.name}</a>
+  <h1>{post.title}</h1>
+
+  <div class="gallery">
+    {
+      post.photos.map((photo) => (
+        <a class="thumbnail" href={photo.url}>
+          <img src={photo.thumbnailUrl} alt="" />
+        </a>
+      ))
+    }
+  </div>
+</Layout>

@@ -1,0 +1,38 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { categories, getPosts } from "../../lib/photos";
+
+export function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const posts = getPosts(category.slug);
+---
+
+<Layout title={`${category.name} — Luka & Vanja`}>
+  <a class="back-link" href="/">&larr; Luka &amp; Vanja</a>
+  <h1>{category.name}</h1>
+
+  {
+    posts.length === 0 ? (
+      <p class="empty">No photos yet.</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/${category.slug}/${post.date}/`}>
+              {post.title}
+              <span class="count">
+                {post.photos.length} {post.photos.length === 1 ? "photo" : "photos"}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Layout>

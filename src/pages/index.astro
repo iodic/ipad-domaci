@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { categories, getPosts } from "../lib/photos";
+---
+
+<Layout title="Luka & Vanja">
+  <h1>Photos</h1>
+
+  {
+    categories.map((category) => {
+      const posts = getPosts(category.slug);
+      const photoCount = posts.reduce(
+        (total, post) => total + post.photos.length,
+        0,
+      );
+
+      return (
+        <a class="category-link" href={`/${category.slug}/`}>
+          {category.name}
+          <small>
+            {photoCount === 0
+              ? "No photos yet"
+              : `${photoCount} ${photoCount === 1 ? "photo" : "photos"}`}
+          </small>
+        </a>
+      );
+    })
+  }
+</Layout>

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.logs/
+.DS_Store
+
+# Local inboxes are never published. Generated web images under public/photos are.
+photo-src/luka/*
+!photo-src/luka/.gitkeep
+photo-src/vanja/*
+!photo-src/vanja/.gitkeep
