@@ -55,7 +55,7 @@ Remove it with:
 npm run watcher:uninstall
 ```
 
-The Mac only needs to be awake while receiving and publishing new photos. Vercel continues serving the existing gallery while the Mac is asleep.
+The Mac only needs to be awake while receiving and publishing new photos. GitHub Pages continues serving the existing gallery while the Mac is asleep.
 
 ## Develop and build
 
@@ -65,20 +65,24 @@ npm run dev
 npm run build
 ```
 
-Astro writes the built site to `dist/`. That directory is not committed. The generated images under `public/photos/` are committed so Vercel can include them in each build.
+Astro writes the built site to `dist/`. That directory is not committed. The generated images under `public/photos/` are committed, and GitHub Pages rebuilds the site after each push.
 
 There is no browser-side JavaScript. Clicking a thumbnail opens the image file directly; use the browser's Back button to return to the dated page.
 
-## Deploy to Vercel
+Every page includes a `noindex, nofollow, noarchive` robots directive. `robots.txt` also asks every crawler to stay out. These are requests honored by well-behaved search engines, not access controls.
 
-1. Push this repository to GitHub.
-2. Import the repository in Vercel.
-3. Use the detected Astro settings (`npm run build`, output directory `dist`).
-4. Add the chosen `iodicdesign.com` subdomain in the Vercel project's domain settings.
-5. Point that subdomain's DNS record to the value Vercel provides.
+## Hosting
+
+The public `iodic/ipad-domaci` repository is built and hosted using GitHub Pages. HTTPS enforcement must remain disabled so the iPad 1 can use:
+
+```text
+http://domaci.iodicdesign.com
+```
+
+The Cloudflare DNS record should be a DNS-only CNAME:
+
+```text
+domaci -> iodic.github.io
+```
 
 The deployed gallery is intentionally public.
-
-## Old iPad HTTPS compatibility
-
-The site itself targets old Safari, but an iPad 1 may reject Vercel's modern TLS ciphers or certificate chain before loading the HTML. Test the Vercel deployment on the device. If HTTPS fails, place the custom subdomain behind Cloudflare with legacy browser TLS compatibility, or use a host that still accepts the iPad's TLS capabilities.

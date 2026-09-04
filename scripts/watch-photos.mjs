@@ -80,7 +80,7 @@ async function publishChanges() {
 
   changedGroups.clear();
   await runGit(["push"]);
-  console.log("Pushed. Vercel will rebuild the site.");
+  console.log("Pushed. GitHub Pages will rebuild the site.");
 }
 
 function commitMessage(groups) {
