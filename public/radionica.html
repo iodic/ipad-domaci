@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kako nastaje dobar sastav — radionica</title>
+<style>
+:root{
+  --paper:#fcf9f4; --card:#ffffff; --ink:#1b2c36; --muted:#5c7180; --line:#e2dbd0;
+  --teal:#0e6172; --teal-soft:#e4f0f2; --amber:#b96f14; --amber-soft:#fbf0dd;
+  --green:#1b7a5a; --green-soft:#e6f2ec; --red:#a8442f; --red-soft:#f8eae6;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+.wrap{width:min(1080px,calc(100% - 32px));margin:0 auto}
+
+/* ---------- zaglavlje ---------- */
+header.top{background:linear-gradient(160deg,#0e6172,#134b58 60%,#123a45);color:#f4fbfc;padding:56px 0 44px}
+.eyebrow{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#8fc9d3;margin:0 0 14px;font-weight:600}
+header.top h1{font-size:clamp(34px,6.2vw,62px);line-height:1.03;letter-spacing:-.03em;margin:0 0 16px;font-weight:800}
+header.top .lead{font-size:clamp(17px,2.2vw,21px);color:#cfe6ea;max-width:60ch;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{font-size:13px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.12);color:#e4f2f4}
+
+/* ---------- navigacija ---------- */
+nav.toc{position:sticky;top:0;z-index:20;background:rgba(252,249,244,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc ul{display:flex;gap:4px;list-style:none;margin:0;padding:9px 0;overflow-x:auto;scrollbar-width:none}
+nav.toc ul::-webkit-scrollbar{display:none}
+nav.toc a{white-space:nowrap;font-size:14px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:999px}
+nav.toc a:hover{background:var(--teal-soft);color:var(--teal)}
+
+/* ---------- sekcije ---------- */
+section.step{padding:56px 0 8px;border-top:1px solid var(--line)}
+section.step:first-of-type{border-top:none}
+.num{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin:0 0 12px}
+.num i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--amber-soft);color:var(--amber);display:grid;place-items:center;font-size:13px}
+h2{font-size:clamp(26px,3.6vw,38px);line-height:1.15;letter-spacing:-.02em;margin:0 0 12px;font-weight:750}
+h3{font-size:22px;line-height:1.25;margin:0 0 8px;font-weight:700}
+h4{font-size:16px;margin:0 0 6px;font-weight:700}
+p{margin:0 0 14px;max-width:70ch}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* ---------- kartice ---------- */
+.analysis{margin:34px 0 10px}
+.analysis h3{margin-bottom:4px}
+.analysis-lead{color:var(--muted);font-size:15px;margin:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 8px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.card p{margin:0;font-size:15.5px;color:var(--muted)}
+.card h4{color:var(--ink)}
+
+/* ---------- učenikova rečenica ---------- */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.ex{border-radius:var(--r);padding:20px 22px;border:1px solid var(--line);background:var(--card)}
+.ex.bad{background:var(--red-soft);border-color:#eccec5}
+.ex.good{background:var(--green-soft);border-color:#c6e0d5}
+.ex .label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px}
+.ex.bad .label{color:var(--red)}
+.ex.good .label{color:var(--green)}
+.ex q,.ex blockquote{display:block;font-family:var(--serif);font-size:19px;line-height:1.5;margin:0 0 12px;quotes:none}
+.ex .why{font-size:14.5px;color:var(--muted);margin:0}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--green);color:#fff;margin-bottom:10px}
+
+/* ---------- filter ---------- */
+.filter{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.q{background:var(--teal-soft);border-radius:var(--r);padding:18px}
+.q b{display:block;font-size:16px;margin-bottom:6px;color:var(--teal)}
+.q span{font-size:14.5px;color:#3d5a63}
+.checker{margin:22px 0 8px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.checker textarea{width:100%;min-height:74px;font:16px/1.5 var(--serif);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fdfbf8;color:var(--ink);resize:vertical}
+.checker textarea:focus{outline:2px solid var(--teal);outline-offset:1px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.toggles button{font:inherit;font-size:14px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.toggles button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.verdict{margin:0;font-size:15.5px;font-weight:600;min-height:24px}
+
+/* ---------- parovi ---------- */
+.pairs{margin:18px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.pair{display:grid;grid-template-columns:1fr 1.4fr;gap:0;border-top:1px solid var(--line)}
+.pair:first-child{border-top:none}
+.pair>div{padding:15px 20px;font-family:var(--serif);font-size:16.5px}
+.pair .from{color:var(--muted);background:#faf6f0}
+.pair .to{color:var(--ink)}
+.pair .to::before{content:"→ ";color:var(--green);font-family:var(--sans);font-weight:700}
+
+/* ---------- kadar ---------- */
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;position:relative}
+.shot{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.shot b{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.shot p{margin:0;font-family:var(--serif);font-size:16.5px}
+
+/* ---------- sastavi ---------- */
+.essay-switch{display:flex;align-items:center;gap:10px;margin:18px 0 6px;font-size:14.5px;color:var(--muted)}
+.essay-switch button{font:inherit;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.essay-switch button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.essay{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 28px;margin:18px 0 26px}
+.essay-head{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.essay-sub{margin:0;color:var(--muted);font-size:15px}
+.para{display:grid;grid-template-columns:1fr 250px;gap:22px;padding:14px 0;border-top:1px dashed #ece5da}
+.para:first-of-type{border-top:none}
+.para-tag{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.para-tag b{color:var(--amber)}
+.para-body p{font-family:var(--serif);font-size:18px;line-height:1.62;margin:0;max-width:none}
+.para-note{border-left:3px solid var(--teal-soft);padding-left:14px}
+.para-note p{margin:0;font-size:14px;color:var(--muted)}
+body.clean .para{grid-template-columns:1fr}
+body.clean .para-note{display:none}
+body.clean .para-tag{display:none}
+
+/* ---------- vežba i lista ---------- */
+details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin:12px 0}
+details summary{cursor:pointer;font-weight:650;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸ ";color:var(--amber)}
+details[open] summary::before{content:"▾ "}
+details p{margin:12px 0 0;color:var(--muted);font-size:15.5px}
+.checklist{list-style:none;padding:0;margin:18px 0}
+.checklist li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin:8px 0;display:flex;gap:12px;align-items:center}
+.checklist input{width:20px;height:20px;accent-color:var(--teal);flex:none}
+.checklist label{cursor:pointer}
+
+/* ---------- roditelj i izvori ---------- */
+.parent{background:#f4efe6;border:1px solid #e6dcc9;border-radius:var(--r);padding:26px 28px;margin:18px 0}
+.parent h3{margin-top:0}
+.parent-link{margin:26px 0 0;padding:20px 24px;background:#f4efe6;border:1px solid #e6dcc9;border-radius:var(--r);max-width:none}
+.parent-link a{display:block;font-weight:700;font-size:17px;color:var(--teal);text-decoration:none;margin-bottom:4px}
+.parent-link a:hover{text-decoration:underline}
+.parent-link span{display:block;color:var(--muted);font-size:14.5px}
+.backlink{display:inline-block;margin:0 0 8px;color:var(--teal);font-weight:600;text-decoration:none}
+.backlink:hover{text-decoration:underline}
+.sources{list-style:none;padding:0;margin:18px 0}
+.sources li{padding:12px 0;border-top:1px solid var(--line)}
+.sources a{color:var(--teal);font-weight:600}
+.sources span{display:block;color:var(--muted);font-size:14.5px}
+footer{padding:40px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:40px}
+
+@media (max-width:880px){
+  .grid-2,.grid-3,.compare,.filter,.shots{grid-template-columns:1fr}
+  .para{grid-template-columns:1fr}
+  .para-note{border-left:3px solid var(--amber-soft)}
+  .pair{grid-template-columns:1fr}
+  .pair .to{border-top:1px solid var(--line)}
+}
+@media print{
+  body{background:#fff}
+  nav.toc,.essay-switch,.checker,.toggles{display:none}
+  header.top{background:#fff;color:#000;border-bottom:3px solid #000;padding:0 0 20px}
+  header.top h1,header.top .lead,.eyebrow{color:#000}
+  .chip{background:#eee;color:#000}
+  section.step{padding-top:24px;break-inside:avoid}
+  .card,.essay,.parent,details{break-inside:avoid}
+  details{border:1px solid #ccc}
+  details p{display:block}
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#161c20;--card:#1e262b;--ink:#e8eef0;--muted:#9db0b8;--line:#2e3a41;
+        --teal-soft:#17323a;--amber-soft:#3a2c16;--green-soft:#16302a;--red-soft:#33211d;--amber:#d9963c}
+  .pair .from{background:#1a2126}
+  .parent,.parent-link{background:#20282c;border-color:var(--line)}
+  .checker textarea{background:#182024;color:var(--ink)}
+  .toggles button,.essay-switch button{background:#1e262b;color:var(--ink)}
+  .ex.bad{border-color:#4a2f28}.ex.good{border-color:#23453a}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Radionica za peti razred · verzija 3</p>
+    <h1>Kako nastaje<br>dobar sastav</h1>
+    <p class="lead">Ne piše se više. Piše se tako da čitalac vidi jedan trenutak. Ovde je put od spiska događaja do priče, sa dva cela primera i objašnjenjem svakog poteza.</p>
+    <div class="chips">
+      <span class="chip">Dve teme: „Leto koje ću zapamtiti“ i „Beogradsko leto“</span>
+      <span class="chip">Dva cela sastava sa beleškama</span>
+      <span class="chip">Filter za svaku rečenicu</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap"><ul>
+  <li><a href="#pocetak">Spisak ili priča</a></li>
+  <li><a href="#tema">Tema i tri dela</a></li>
+  <li><a href="#filter">Filter</a></li>
+  <li><a href="#slika">Od činjenice do slike</a></li>
+  <li><a href="#kadar">Jedan kadar</a></li>
+  <li><a href="#sastavi">Dva cela sastava</a></li>
+  <li><a href="#vezba">Vežba</a></li>
+  <li><a href="#provera">Provera</a></li>
+</ul></div></nav>
+
+<main class="wrap">
+
+<section class="step" id="pocetak">
+  <p class="num"><i>1</i> Polazna tačka</p>
+  <h2>Spisak ili priča</h2>
+  <p>Obe rečenice govore o istom letu. Prva nabraja gde smo bili. Druga pokazuje jedan trenutak. Razlika nije u tome koliko je ko dobar pisac, nego u tome šta je izabrano.</p>
+  <div class="compare">
+    <div class="ex bad">
+      <p class="label">Spisak</p>
+      <blockquote>„Bili smo dve nedelje u Hrvatskoj, mesec i po u Crnoj Gori, pa tri dana na bazenu.“</blockquote>
+      <p class="why">Čitalac dobija raspored. Ne vidi nijedan trenutak i ne zna kako je kome bilo.</p>
+    </div>
+    <div class="ex good">
+      <p class="label">Prizor</p>
+      <blockquote>„Ujka je napumpao SUP dasku i pokazao mi kako se koristi. Onda je došao red na mene da se popnem na dasku. Nije mi bilo svejedno, čim sam se popeo u čučanj, daska je krenula da se ljulja…“</blockquote>
+      <p class="why">Radnja, reakcija i jedan detalj koji se pomera. Ovakvih mesta treba da bude više, a spiska manje.</p>
+    </div>
+  </div>
+  <p class="muted small">Obe rečenice su napisane za ovu radionicu. Ne treba ih prepisati — treba isto uraditi sa svojim danom.</p>
+</section>
+
+<section class="step" id="tema">
+  <p class="num"><i>2</i> Pre pisanja</p>
+  <h2>Tema je obećanje čitaocu</h2>
+  <p>Naslov govori šta čitalac dobija. „Leto koje ću zapamtiti“ traži razlog za pamćenje. „Beogradsko leto“ traži Beograd viđen tokom leta. Svaka rečenica treba da pomaže tom obećanju.</p>
+  <div class="grid-3">
+    <div class="card"><h4>Uvod</h4><p>U dve ili tri rečenice najavi atmosferu i glavni događaj. Ne otkrivaj odmah sve.</p></div>
+    <div class="card"><h4>Razrada</h4><p>Najduži deo. Ispričaj jedan glavni prizor: šta se desilo, šta si ti uradio, kako se osećanje promenilo.</p></div>
+    <div class="card"><h4>Zaključak</h4><p>Reci zašto ti je taj trenutak važan. Ne uvodi novi događaj i ne moraš da izvučeš veliku pouku.</p></div>
+  </div>
+  <h3 style="margin-top:30px">Motivi za temu „Beogradsko leto“</h3>
+  <p class="muted small">Motiv je manja slika koja pomaže glavnoj temi. Izaberi dva ili tri, ne sve.</p>
+  <div class="grid-2">
+    <div class="card"><h4>Vrelina</h4><p>vreli pločnik, sparan vazduh, kratke senke</p></div><div class="card"><h4>Voda</h4><p>prskanje, odsjaj na reci, hladna površina bazena</p></div><div class="card"><h4>Grad</h4><p>tramvaj, užarene zgrade, graja iz parka</p></div><div class="card"><h4>Ljudi i osećanja</h4><p>porodica, smeh, umor, olakšanje uveče</p></div>
+  </div>
+</section>
+
+<section class="step" id="filter">
+  <p class="num"><i>3</i> Dok pišeš</p>
+  <h2>Filter za svaku rečenicu</h2>
+  <p>Pre nego što zadržiš podatak, pitaj šta on radi u sastavu. Datum i ime nisu zabranjeni. Smetaju samo kada ne nose događaj.</p>
+  <div class="filter">
+    <div class="q"><b>Pomaže naslovu?</b><span>Ako ne objašnjava leto za pamćenje ili Beograd leti, verovatno smeta.</span></div><div class="q"><b>Pokreće događaj?</b><span>Dobra rečenica menja prizor, radnju ili naše razumevanje.</span></div><div class="q"><b>Stvara sliku?</b><span>Prizor, zvuk, miris, dodir ili ukus daju život tekstu.</span></div><div class="q"><b>Otkriva osećanje?</b><span>Napiši šta si pomislio ili kako se osećanje promenilo.</span></div>
+  </div>
+  <div class="checker">
+    <h3>Probaj na svojoj rečenici</h3>
+    <p class="muted small">Prekucaj jednu rečenicu iz svog sastava, pa klikni na svako pitanje na koje je odgovor „da“.</p>
+    <textarea id="sent" placeholder="Ovde prekucaj jednu svoju rečenicu…" aria-label="Tvoja rečenica"></textarea>
+    <div class="toggles" id="toggles">
+      <button type="button" aria-pressed="false" data-i="0">Pomaže naslovu?</button><button type="button" aria-pressed="false" data-i="1">Pokreće događaj?</button><button type="button" aria-pressed="false" data-i="2">Stvara sliku?</button><button type="button" aria-pressed="false" data-i="3">Otkriva osećanje?</button>
+    </div>
+    <p class="verdict" id="verdict"></p>
+  </div>
+</section>
+
+<section class="step" id="slika">
+  <p class="num"><i>4</i> Zamena</p>
+  <h2>Od činjenice do slike</h2>
+  <p>Leva rečenica je tačna, ali prazna. Desna kaže šta se zapravo desilo. Obične reči su dovoljne, opis ne mora da zvuči pesnički.</p>
+  <div class="pairs">
+    <div class="pair"><div class="from">„Bilo je vruće.“</div><div class="to">„Do bazena smo dva puta stali da popijemo vodu.“</div></div><div class="pair"><div class="from">„Bilo je zabavno.“</div><div class="to">„Brat je pokušao da me poprska, a pogodio je tatu.“</div></div><div class="pair"><div class="from">„Bio sam na bazenu.“</div><div class="to">„Pokušao sam da preplivam bazen bez zaustavljanja.“</div></div><div class="pair"><div class="from">„Jeo sam sladoled.“</div><div class="to">„Dok sam tražio novac, sladoled mi je kapnuo na majicu.“</div></div>
+  </div>
+</section>
+
+<section class="step" id="kadar">
+  <p class="num"><i>5</i> Plan</p>
+  <h2>Jedan kadar vredi više od kalendara</h2>
+  <p>Umesto celog leta, uzmi jedno popodne i podeli ga na tri koraka. Ovo je primer plana, ne gotov sastav — zameni detalje onim što se tebi stvarno desilo.</p>
+  <div class="shots">
+    <div class="shot"><b>Pre · Put do bazena</b><p>Do bazena smo dva puta stali da popijemo vodu.</p></div><div class="shot"><b>Trenutak · U vodi</b><p>Brat se pohvalio da duže roni. Odmah smo proverili.</p></div><div class="shot"><b>Posle · Povratak</b><p>Jedva sam držao oči otvorene u autobusu.</p></div>
+  </div>
+</section>
+
+<section class="step" id="sastavi">
+  <p class="num"><i>6</i> Modeli</p>
+  <h2>Dva cela sastava</h2>
+  <p>Oba su originalna i izmišljena za ovu vežbu, na temama koje se razlikuju od tvog domaćeg zadatka. Svaki ima oko 250 reči — to je dužina ovih primera, a ne propisana dužina školskog rada.</p>
+  <div class="essay-switch">
+    <span>Prikaz:</span>
+    <button type="button" id="tglNotes" aria-pressed="true">Sa beleškama</button>
+    <span class="small">Prvo pročitaj sastav bez beležaka, pa tek onda uključi objašnjenja.</span>
+  </div>
+  
+<article class="essay" id="zimski">
+  <header class="essay-head">
+    <h3>Doživljaj sa zimskog raspusta</h3>
+    <p class="essay-sub">Šest pasusa o jednom pokušaju koji nije uspeo kako je zamišljen.</p>
+  </header>
+  
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>1</b> Čekanje</span>
+      <p>Prvih dana zimskog raspusta stalno sam gledao vremensku prognozu. Želeo sam sneg, a napolju je padala samo kiša. Kada se park konačno zabeleo, pozvao sam brata Luku. Dogovorili smo se da napravimo iglo u koji možemo obojica da stanemo.</p>
+    </div>
+    <aside class="para-note"><p>Uvod ne nabraja ceo raspust. Postavlja jednu želju i jedan plan. Zato čitalac zna šta da prati.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>2</b> Prvi blok</span>
+      <p>Poneli smo plastične kofe i malu lopatu. Mislili smo da je dovoljno da naslažemo nekoliko blokova snega i napravimo krov. Prvi blok se raspao čim sam okrenuo kofu. Luka je probao da ga podigne lopatom, ali je uspeo samo da ga preseče napola.</p>
+    </div>
+    <aside class="para-note"><p>Prvi neuspeh pokreće priču. Da je sve odmah uspelo, ostalo bi samo nabrajanje.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>3</b> Pretesno</span>
+      <p>Zatim smo jače nabijali sneg. Tako smo napravili niz blokova u krug, ali nam je za svaki trebalo mnogo vremena. Kada smo seli unutra da proverimo veličinu, kolena su nam se sudarila. Napolju je ostalo dovoljno mesta jedino za naše čizme.</p>
+    </div>
+    <aside class="para-note"><p>Kolena koja se sudaraju su mera. To radi bolje nego rečenica „bilo je malo mesta“.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>4</b> Zid se ruši</span>
+      <p>„Ovo je iglo za neku mačku“, rekao je Luka. Hteo sam da mu odgovorim, ali sam se naslonio na zid i srušio dva bloka. Sneg mi je upao u rukav. Bio sam ljut jer smo morali ponovo da radimo ono što smo već završili.</p>
+    </div>
+    <aside class="para-note"><p>Sneg u rukavu objašnjava ljutnju. Osećanje ima uzrok, pa ga ne moramo najavljivati.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>5</b> Novi plan</span>
+      <p>Od krova smo odustali. Raširili smo krug i napravili tvrđavu. Naš mlađi brat nam je dodavao sneg, pa smo mu ostavili mesto pored ulaza. Posle smo iz tvrđave gađali grudvama panj. Čak nam je i krivi zid dobro poslužio da na njega poređamo grudve.</p>
+    </div>
+    <aside class="para-note"><p>Plan se menja. Mlađi brat ulazi u priču zato što pomaže, a ne zato što postoji.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>6</b> Povratak</span>
+      <p>Kući sam se vratio sa mokrim rukavicama. Mama je pitala kako izgleda naš iglo. Rekao sam da nema krov, ali zato ima odlično mesto za municiju. Sutradan smo ponovo otišli u park. Hteli smo da vidimo da li je tvrđava izdržala noć.</p>
+    </div>
+    <aside class="para-note"><p>Kraj se vraća na početak: iglo bez krova, ali korisno. Nema nalepljene pouke.</p></aside>
+  </div>
+</article>
+  
+<section class="analysis ">
+  <h3>Zašto zimski sastav ima šta da kaže</h3>
+  <p class="analysis-lead">Ista četiri postupka možeš da primeniš na svoj tekst.</p>
+  <div class="grid-2">
+    <div class="card"><h4>Postoji jedna namera</h4><p>Dečaci žele da naprave iglo. Zbog te namere biramo kofe, blokove i zid. Ne treba nam spisak svih dana raspusta.</p></div><div class="card"><h4>Ne ide sve po planu</h4><p>Blok se raspada, nema mesta, zid se ruši. Svaki pokušaj vodi sledećem. Čitalac može da prati šta se dešava.</p></div><div class="card"><h4>Detalji imaju razlog</h4><p>Sneg u rukavu objašnjava ljutnju. Mlađi brat ulazi u priču zato što pomaže. Njegove godine i datum rođenja nisu potrebni.</p></div><div class="card"><h4>Kraj pripada početku</h4><p>Počeli smo planom za iglo, a završili tvrđavom. Odgovor mami pokazuje kako dečak sada gleda na neuspeh.</p></div>
+  </div>
+</section>
+  
+<article class="essay" id="drug">
+  <header class="essay-head">
+    <h3>Moj najbolji drug</h3>
+    <p class="essay-sub">Šest pasusa u kojima se osobina ne tvrdi, nego pokaže.</p>
+  </header>
+  
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>1</b> Ko je Petar</span>
+      <p>Moj najbolji drug se zove Petar. Sedimo zajedno i često moramo da se dogovaramo oko prostora na klupi, jer on uvek raširi sve sveske. Najviše volim što pred njim mogu da priznam da nešto ne znam. Ne počne odmah da mi se smeje.</p>
+    </div>
+    <aside class="para-note"><p>Osobina je najavljena, ali još nije dokazana. Zato mora da sledi jedan događaj.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>2</b> Zadatak u paru</span>
+      <p>To mi je značilo kada smo iz prirode dobili zadatak da u paru predstavimo jednu životinju. Izabrali smo dabra. Traženje slika mi je išlo lako, ali sam se brinuo kako ću govoriti pred odeljenjem. Predložio sam da Petar kaže sve, a da ja držim plakat.</p>
+    </div>
+    <aside class="para-note"><p>Jedan konkretan zadatak, a ne spisak svega što smo radili tog polugodišta.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>3</b> Nije pristao</span>
+      <p>Petar je rekao da onda treba i njegovo ime da napišemo dvaput. Nasmejao sam se, ali sam shvatio šta hoće da kaže. Dogovorili smo se da ja objasnim kako dabar gradi branu. Petar je seo preko puta mene i glumio publiku.</p>
+    </div>
+    <aside class="para-note"><p>Petar ne drži govor o drugarstvu. On postupi, pa mi to vidimo umesto da nam neko kaže.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>4</b> Vežba</span>
+      <p>Prvi put sam gledao samo u papir. Kada sam se zbunio, Petar me je pitao čemu dabru služe grane. Odgovorio sam mu bez gledanja. Onda je rekao: „Pa to ispričaj i njima.“ Vežbali smo još jednom, ovog puta uz sliku na plakatu.</p>
+    </div>
+    <aside class="para-note"><p>Pitanje umesto gotovog rešenja. Tu se najbolje vidi kakav je drug.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>5</b> Na času</span>
+      <p>Na času sam ipak zastao posle prve rečenice. Petar nije nastavio umesto mene. Pokazao je na grane na slici. Setio sam se našeg razgovora i objasnio ostalo. Tek kada smo seli, primetio sam da sve vreme gužvam papir u ruci.</p>
+    </div>
+    <aside class="para-note"><p>Najnapetiji trenutak dobija najviše prostora. Zgužvani papir kaže koliko je bilo teško.</p></aside>
+  </div>
+  <div class="para">
+    <div class="para-body">
+      <span class="para-tag"><b>6</b> I mane</span>
+      <p>Petar ume i da me iznervira. Tog dana je opet zauzeo pola moje strane klupe, pa sam mu pomerio pernicu u klupu. Ipak, baš njega bih ponovo izabrao za rad u paru. Pomogao mi je da završim svoj deo, a posle nije svima pričao kako me je spasao.</p>
+    </div>
+    <aside class="para-note"><p>Mana ga čini stvarnim. Zaključak ostaje u temi drugarstva i ne uvodi novi događaj.</p></aside>
+  </div>
+</article>
+  
+<section class="analysis ">
+  <h3>Kako se u priči vidi kakav je drug</h3>
+  <p class="analysis-lead">Reč „dobar“ ništa ne dokazuje. Događaj dokazuje.</p>
+  <div class="grid-2">
+    <div class="card"><h4>Osobina dobija primer</h4><p>„Mogu da priznam da nešto ne znam“ najavljuje ono što ćemo videti tokom pripreme izlaganja.</p></div><div class="card"><h4>Postupak otkriva osobinu</h4><p>Petar postavlja pitanje i čeka odgovor. Tako vidimo da ume da pomogne. Reč „dobar“ sama ne bi bila dovoljna.</p></div><div class="card"><h4>Ima i mane</h4><p>Petar zauzima klupu. Taj detalj daje mu prepoznatljivu naviku. Drug može da bude dobar i da nas ponekad nervira.</p></div><div class="card"><h4>Tema ostaje drugarstvo</h4><p>Dabar služi događaju. Dugačko objašnjenje o dabrovima skrenulo bi sa teme, iako bi podaci bili tačni.</p></div>
+  </div>
+</section>
+  
+<section class="analysis ">
+  <h3>Šta vredi primetiti u primerima sa interneta</h3>
+  <p class="analysis-lead">Ni tekst objavljen na internetu nije automatski uzoran. Uzimamo samo ono što radi.</p>
+  <div class="grid-2">
+    <div class="card"><h4>Zimski raspust</h4><p>„Izgradili smo zaklone od snega, svaka grupa za sebe, napravili municiju, odnosno grudve i započeli borbu.“</p></div><div class="card"><h4>Zašto ovaj odlomak „radi“</h4><p>Saznajemo šta su deca uradila. Zakloni i grudve pripadaju temi zime. Pisac ne mora da doda da je bilo „neopisivo lepo“.</p></div><div class="card"><h4>Moj najbolji drug</h4><p>„Nikada se ne pravi važan kada zna i ume nešto što ja ne znam, kao druga deca.“</p></div><div class="card"><h4>Šta bismo razvili</h4><p>Ovo je samo tvrdnja o osobini. Jedan događaj u kojem drug tako postupi učinio bi je uverljivom.</p></div>
+  </div>
+</section>
+</section>
+
+<section class="step" id="vezba">
+  <p class="num"><i>7</i> Vežba</p>
+  <h2>Vežba: šta ostaje, a šta može napolje?</h2>
+  <p>Prvo odgovori naglas, pa tek onda pogledaj objašnjenje.</p>
+  <details><summary>Zimski tekst: „Sneg mi je upao u rukav.“ Ili: „Izašli smo u 10.15 i ostali do 12.40.“ Koji detalj pomaže ovom događaju?</summary><p>Ostaju sneg u rukavu i Petrov postupak. Prvi objašnjava reakciju, drugi pokazuje pomoć. Satnica i podaci o dabru ovde odvlače pažnju.</p></details>
+  <details><summary>Tekst o drugu: „Pokazao je na grane na slici.“ Ili: „Dabar može dugo da ostane pod vodom.“ Koja rečenica otkriva Petrov karakter?</summary><p>Petrov postupak. Podatak o dabru je tačan, ali ne govori ništa o drugu.</p></details>
+  <details><summary>Primena na tvoje leto</summary><p>Podvuci jedan događaj u svom tekstu. Usmeno ispričaj šta se tačno desilo. Zapiši taj deo, pa proveri koje okolne podatke možeš da skratiš.</p></details>
+</section>
+
+<section class="step" id="provera">
+  <p class="num"><i>8</i> Posle pisanja</p>
+  <h2>Provera za 60 sekundi</h2>
+  <p>Pročitaj sastav naglas. Uvo često pronađe ono što oko preskoči.</p>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c0"><label for="c0">Naslov i glavna misao se slažu</label></li><li><input type="checkbox" id="c1"><label for="c1">Uvod, razrada i zaključak imaju pasuse</label></li><li><input type="checkbox" id="c2"><label for="c2">Svaka rečenica ima posao</label></li><li><input type="checkbox" id="c3"><label for="c3">Suvišni datumi i imena su izbrisani</label></li><li><input type="checkbox" id="c4"><label for="c4">Dugačke rečenice su skraćene</label></li>
+  </ul>
+  <div class="card"><h4>Šta mora da ostane</h4><p>Jedna glavna misao. Jedan razvijen događaj. Dve ili tri čulne slike. Jasno osećanje i razlog za pamćenje. Broj opisa i pasusa nije unapred zadata formula.</p></div>
+</section>
+
+<section class="step" id="izvori">
+  <p class="num"><i>9</i> Izvori</p>
+  <h2>Odakle je ovo</h2>
+  <p>Oba cela sastava u ovoj radionici su originalna i napisana za vežbu. Kratki citati sa interneta su posebno označeni i uzeti samo za analizu, ne kao merilo ocene.</p>
+  <ul class="sources">
+    <li><a href="https://www.zarko.edu.rs/wp-content/uploads/2018/08/2018-pravilnik-o-nastavnom-planu-i-programu-za-5-razred-min.pdf">Program nastave za peti razred</a><span>Tema, glavni i sporedni motivi, tok događaja, lični doživljaj i čulni elementi.</span></li><li><a href="https://www.boske.rs/stranice/pisanje_sastava_Bogdan_Novovic.html">Pisanje sastava, Bogdan Novović</a><span>Učenički vodič o planu, povezanosti rečenica i ličnom izrazu.</span></li><li><a href="https://www.mala-skola.com/kompozicija-pisanog-sastava/">Kompozicija pisanog sastava</a><span>Uloga uvoda, razrade i zaključka.</span></li><li><a href="https://literarniradovi.blogspot.com/2018/10/kako-napisati-dobar-sastav.html">Kako napisati dobar sastav</a><span>Izbor dva ili tri važna detalja i uklanjanje beznačajnih pojedinosti.</span></li><li><a href="https://skolskikutak.com/kako-sam-provela-zimski-raspust/">Kako sam provela zimski raspust</a><span>Odlomak o zaklonima i grudvanju, uzet samo za analizu.</span></li><li><a href="https://www.lektire.me/sastav/moj-najbolji-drug_431">Moj najbolji drug</a><span>Odlomak o osobini druga, uzet samo za analizu.</span></li>
+  </ul>
+</section>
+
+<footer class="wrap">
+  <p>Radionica školskog sastava, verzija 3. Primeri služe učenju i ne prepisuju se kao domaći zadatak. Pošalji svoj novi pasus ili pitaj za objašnjenje rečenice koja ti nije jasna.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+  var pressed = [false,false,false,false];
+  var verdict = document.getElementById('verdict');
+  var sent = document.getElementById('sent');
+  function render(){
+    var n = pressed.filter(Boolean).length;
+    var t = (sent.value||'').trim();
+    if(!t){ verdict.textContent=''; return; }
+    var msg, color;
+    if(n===0){ msg='Nijedan odgovor nije „da“. Ova rečenica verovatno može napolje, ili je treba napisati ponovo.'; color='var(--red)'; }
+    else if(n===1){ msg='Jedan „da“. Rečenica nešto radi, ali može jače. Dodaj šta se tačno desilo.'; color='var(--amber)'; }
+    else if(n===2){ msg='Dva „da“. Ovo je dobra rečenica za sastav.'; color='var(--green)'; }
+    else { msg='Tri ili četiri „da“. Ovo je rečenica oko koje možeš da gradiš ceo pasus.'; color='var(--green)'; }
+    verdict.textContent = msg;
+    verdict.style.color = color;
+  }
+  document.getElementById('toggles').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var i = +b.dataset.i; pressed[i] = !pressed[i];
+    b.setAttribute('aria-pressed', String(pressed[i]));
+    render();
+  });
+  sent.addEventListener('input', render);
+
+  var tgl = document.getElementById('tglNotes');
+  tgl.addEventListener('click', function(){
+    var on = tgl.getAttribute('aria-pressed') === 'true';
+    tgl.setAttribute('aria-pressed', String(!on));
+    tgl.textContent = !on ? 'Sa beleškama' : 'Samo sastav';
+    document.body.classList.toggle('clean', on);
+  });
+})();
+</script>
+</body>
+</html>
