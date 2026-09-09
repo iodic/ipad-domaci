@@ -168,6 +168,294 @@ footer{padding:40px 0 60px;color:var(--muted);font-size:14px;border-top:1px soli
   .ex.bad{border-color:#4a2f28}.ex.good{border-color:#23453a}
 }
 </style>
+<style>
+/* Simple fallback styling for older iPad browsers. */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+html {
+  background: #f5f1e9;
+  color: #202b31;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  scroll-padding-top: 0;
+}
+body {
+  margin: 0;
+  background: #f5f1e9;
+  color: #202b31;
+  font: inherit;
+}
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+details,
+summary {
+  display: block;
+}
+.wrap {
+  width: auto;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+header.top {
+  background: #175767;
+  color: #fff;
+  padding: 38px 0 32px;
+}
+.eyebrow {
+  color: #d5e8ec;
+  font-size: 13px;
+  margin: 0 0 10px;
+}
+header.top h1 {
+  color: #fff;
+  font-size: 44px;
+  line-height: 1.1;
+  margin: 0 0 14px;
+}
+header.top .lead {
+  color: #e5f0f2;
+  font-size: 19px;
+  max-width: none;
+}
+.chips {
+  display: block;
+  margin-top: 20px;
+}
+.chip {
+  display: inline-block;
+  background: #2d6d7a;
+  color: #fff;
+  margin: 0 6px 6px 0;
+  padding: 5px 9px;
+}
+nav.toc {
+  position: static;
+  background: #fff;
+  border-bottom: 1px solid #cfc8bc;
+}
+nav.toc ul {
+  display: block;
+  margin: 0;
+  padding: 10px 0 6px;
+  overflow: visible;
+}
+nav.toc li {
+  display: inline;
+}
+nav.toc a {
+  display: inline-block;
+  color: #14566a;
+  padding: 6px 10px;
+  text-decoration: underline;
+}
+section.step {
+  border-top: 1px solid #cfc8bc;
+  padding: 38px 0 8px;
+}
+.num {
+  display: block;
+  color: #985708;
+  margin-bottom: 8px;
+}
+.num i {
+  display: inline;
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: #985708;
+  margin-right: 6px;
+}
+h2 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+h3 {
+  font-size: 22px;
+}
+p {
+  max-width: none;
+}
+.muted,
+.card p,
+.ex .why,
+.analysis-lead,
+.essay-sub,
+.para-note p,
+details p,
+.parent-link span,
+.sources span,
+footer {
+  color: #58676e;
+}
+.grid-2,
+.grid-3,
+.compare,
+.filter,
+.shots,
+.para,
+.pair {
+  display: block;
+  margin: 16px 0;
+}
+.card,
+.ex,
+.q,
+.shot,
+.checker,
+.essay,
+details,
+.parent,
+.parent-link {
+  background: #fff;
+  border: 1px solid #cfc8bc;
+  color: #202b31;
+  margin: 12px 0;
+  padding: 16px 18px;
+}
+.ex.bad {
+  background: #f8e9e5;
+  border-color: #d9b9b0;
+}
+.ex.good {
+  background: #e6f1eb;
+  border-color: #b9d2c6;
+}
+.ex.bad .label {
+  color: #8e3828;
+}
+.ex.good .label {
+  color: #176647;
+}
+.q {
+  background: #e6eff1;
+}
+.q b,
+.q span {
+  color: #244c56;
+}
+.checker textarea {
+  width: 100%;
+  min-height: 80px;
+  background: #fff;
+  border: 1px solid #999;
+  color: #202b31;
+  font: 17px/1.5 Georgia, serif;
+  padding: 10px;
+}
+.toggles,
+.essay-switch {
+  display: block;
+}
+.toggles button,
+.essay-switch button {
+  background: #fff;
+  border: 1px solid #777;
+  color: #202b31;
+  font: 14px Helvetica, Arial, sans-serif;
+  margin: 4px;
+  padding: 8px 10px;
+}
+.toggles button[aria-pressed="true"],
+.essay-switch button[aria-pressed="true"] {
+  background: #175767;
+  border-color: #175767;
+  color: #fff;
+}
+.pairs {
+  background: #fff;
+  border: 1px solid #cfc8bc;
+}
+.pair {
+  border-top: 1px solid #cfc8bc;
+  margin: 0;
+}
+.pair > div {
+  padding: 12px 16px;
+}
+.pair .from {
+  background: #eee9e1;
+  color: #58676e;
+}
+.pair .to {
+  border-top: 0;
+  color: #202b31;
+}
+.essay {
+  padding: 20px;
+}
+.para {
+  border-top: 1px solid #ddd6ca;
+  padding: 14px 0 0;
+}
+.para-body p {
+  font-size: 18px;
+}
+.para-note {
+  background: #eef3f4;
+  border: 0;
+  margin-top: 10px;
+  padding: 10px 12px;
+}
+body.clean .para {
+  display: block;
+}
+.checklist li {
+  display: block;
+  background: #fff;
+  border: 1px solid #cfc8bc;
+  padding: 12px;
+}
+.checklist input {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.parent,
+.parent-link {
+  background: #eee9df;
+}
+.sources a,
+.parent-link a,
+.backlink {
+  color: #14566a;
+}
+footer {
+  border-top: 1px solid #cfc8bc;
+  margin-top: 32px;
+  padding: 28px 0 40px;
+}
+@media screen and (max-width: 600px) {
+  html {
+    font-size: 17px;
+  }
+  .wrap {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  header.top {
+    padding: 28px 0 24px;
+  }
+  header.top h1 {
+    font-size: 34px;
+  }
+  header.top .lead {
+    font-size: 17px;
+  }
+  h2 {
+    font-size: 26px;
+  }
+}
+</style>
 </head>
 <body>
 
