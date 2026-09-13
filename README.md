@@ -16,8 +16,9 @@ The processor groups photos using each source file's macOS creation date. All ph
 - Every photo, whatever its format, gets a levels and contrast pass so paper reaches white, pencil reaches black, and faint handwriting stays legible.
 - HEIC/HEIF originals are converted to JPG at quality 88. JPG, JPEG, and PNG keep their format and full resolution.
 - A separate thumbnail, at most 360 pixels on its longest side, is generated for gallery pages.
-- Everything in `photo-src/` is ignored by Git and is never published.
-- Web-ready images are written to `public/photos/` and committed.
+- After both web-ready versions are created, the source is moved into that person's `archive/` subdirectory (for example, `photo-src/luka/archive/`).
+- Everything in `photo-src/`, including archived originals, is ignored by Git and is never published.
+- Web-ready images are written to `public/photos/` and committed. Astro copies them into `dist/photos/` when the site is built.
 
 Process the inboxes once:
 
@@ -25,7 +26,7 @@ Process the inboxes once:
 npm run photos:process
 ```
 
-Re-render everything, including photos already in `public/photos/`, after changing the enhancement settings:
+Re-render everything from the archived originals, including photos already in `public/photos/`, after changing the enhancement settings:
 
 ```sh
 npm run photos:reprocess
@@ -47,7 +48,7 @@ Watch and process without committing or pushing:
 npm run photos:watch:local
 ```
 
-Files can remain in the inboxes. Output names contain a content hash, so restarting the watcher does not duplicate unchanged files.
+Successfully processed files leave the inbox and remain available under its `archive/` subdirectory. Output names contain a content hash, so reprocessing archived originals does not duplicate unchanged files.
 
 ## Start the watcher automatically on macOS
 

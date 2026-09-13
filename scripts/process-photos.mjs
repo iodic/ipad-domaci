@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sourceRoot = path.join(projectRoot, "photo-src");
 const outputRoot = path.join(projectRoot, "public", "photos");
+const archiveDirectoryName = "archive";
 
 export const categories = ["luka", "vanja"];
 const supportedExtensions = new Set([".heic", ".heif", ".jpg", ".jpeg", ".png"]);
@@ -72,12 +73,16 @@ export async function processPhoto(inputPath, category) {
     });
   }
 
+  const archivedInputPath = await archivePhoto(inputPath, category, hash);
+
   return {
     category,
     date,
     outputPath,
     thumbnailPath,
+    archivedInputPath,
     relativeOutputPath: path.relative(projectRoot, outputPath),
+    relativeArchivedInputPath: path.relative(projectRoot, archivedInputPath),
   };
 }
 
@@ -86,22 +91,56 @@ export async function processAllPhotos() {
 
   for (const category of categories) {
     const directory = path.join(sourceRoot, category);
-    await fs.mkdir(directory, { recursive: true });
+    const archiveDirectory = path.join(directory, archiveDirectoryName);
+    await fs.mkdir(archiveDirectory, { recursive: true });
 
-    for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
-      if (!entry.isFile() || entry.name.startsWith(".")) {
-        continue;
+    const inputs = [];
+    for (const inputDirectory of [directory, archiveDirectory]) {
+      for (const entry of await fs.readdir(inputDirectory, { withFileTypes: true })) {
+        if (entry.isFile() && !entry.name.startsWith(".")) {
+          inputs.push(path.join(inputDirectory, entry.name));
+        }
       }
+    }
 
-      const result = await processPhoto(path.join(directory, entry.name), category);
+    for (const inputPath of inputs) {
+      const result = await processPhoto(inputPath, category);
       if (result) {
         processed.push(result);
-        console.log(`Processed ${category}/${entry.name} -> ${result.relativeOutputPath}`);
+        console.log(`Processed ${category}/${path.basename(inputPath)} -> ${result.relativeOutputPath}`);
+        if (result.archivedInputPath !== inputPath) {
+          console.log(`Archived ${category}/${path.basename(inputPath)} -> ${result.relativeArchivedInputPath}`);
+        }
       }
     }
   }
 
   return processed;
+}
+
+async function archivePhoto(inputPath, category, hash) {
+  const inboxDirectory = path.join(sourceRoot, category);
+  if (path.dirname(path.resolve(inputPath)) !== inboxDirectory) {
+    return inputPath;
+  }
+
+  const archiveDirectory = path.join(inboxDirectory, archiveDirectoryName);
+  await fs.mkdir(archiveDirectory, { recursive: true });
+
+  const extension = path.extname(inputPath);
+  const stem = path.basename(inputPath, extension);
+  let archivePath = path.join(archiveDirectory, path.basename(inputPath));
+
+  if (await exists(archivePath)) {
+    archivePath = path.join(archiveDirectory, `${stem}-${hash}${extension}`);
+  }
+
+  for (let suffix = 2; await exists(archivePath); suffix += 1) {
+    archivePath = path.join(archiveDirectory, `${stem}-${hash}-${suffix}${extension}`);
+  }
+
+  await fs.rename(inputPath, archivePath);
+  return archivePath;
 }
 
 // Always renders from the original so the enhancement runs once per output and

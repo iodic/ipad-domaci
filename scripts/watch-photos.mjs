@@ -39,6 +39,7 @@ watcher.on("add", (inputPath) => {
       }
 
       console.log(`Ready: ${result.relativeOutputPath}`);
+      console.log(`Archived: ${result.relativeArchivedInputPath}`);
       changedGroups.add(`${result.category}/${result.date}`);
       schedulePublish();
     })
