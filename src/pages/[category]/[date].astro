@@ -32,6 +32,7 @@ const { category, post } = Astro.props;
       post.photos.map((photo) => (
         <a class="thumbnail" href={photo.url}>
           <img src={photo.thumbnailUrl} alt="" />
+          <span class="filename">{photo.filename}</span>
         </a>
       ))
     }
